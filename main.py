@@ -92,7 +92,7 @@ def generate_pdf_report(image_path, prediction, confidence, patient_name, age, g
     
     # Add patient details in a box
     c.rect(50, height - 190, width - 100, 40)
-    c.setFont("Helvetica", 10)
+    c.setFont("Helvetica", 12)
     c.drawString(60, height - 160, f"Name: {patient_name}")
     c.drawString(60, height - 175, f"Age: {age} years")
     c.drawString(300, height - 160, f"Gender: {gender}")
