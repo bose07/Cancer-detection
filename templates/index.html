@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GI Cancer Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+        }
+        .upload-area:hover {
+            border-color: #4299e1;
+            background-color: #f1f5f9;
+            transform: scale(1.02);
+        }
+        .preview-image {
+            max-width: 400px;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .preview-image:hover {
+            transform: scale(1.05);
+        }
+        .medical-icon {
+            color: #2563eb;
+        }
+        .gradient-bg {
+            background: linear-gradient(120deg, #1e40af, #3b82f6);
+        }
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .spin-in {
+            animation: spinIn 0.5s ease-out;
+        }
+        @keyframes spinIn {
+            from { 
+                opacity: 0;
+                transform: rotate(-180deg) scale(0.3);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+        .button-hover {
+            transition: all 0.3s ease;
+        }
+        .button-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .gradient-text {
+            background: linear-gradient(45deg, #3b82f6, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e40af;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .help-icon {
+            cursor: pointer;
+            color: #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .help-icon:hover {
+            color: #2563eb;
+            transform: scale(1.1);
+        }
+
+        /* Add new animation for statistics */
+        .count-up {
+            animation: countUp 2s ease-out forwards;
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Bar with Animation -->
+    <nav class="gradient-bg text-white shadow-lg animate__animated animate__fadeIn">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg class="h-8 w-8 mr-2 animate__animated animate__rotateIn" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                    <span class="font-bold text-xl">GI Cancer Detection System</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Main Content -->
+        <div class="max-w-4xl mx-auto">
+            <!-- Header Section with Animation -->
+            <header class="text-center mb-12 animate__animated animate__fadeInDown">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">Gastrointestinal Cancer Detection</h1>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    Upload endoscopic images for AI-powered analysis and early detection of gastrointestinal cancer.
+                </p>
+            </header>
+
+            <!-- Info Cards with Animation -->
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <div class="card bg-white p-6 rounded-lg shadow-md animate__animated animate__fadeInLeft">
+                    <div class="text-blue-600 mb-4">
+                        <svg class="h-8 w-8 spin-in" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Accurate Detection</h3>
+                    <p class="text-gray-600">Advanced AI model trained on extensive medical imaging data.</p>
+                </div>
+                <div class="card bg-white p-6 rounded-lg shadow-md animate__animated animate__fadeInUp">
+                    <div class="text-blue-600 mb-4">
+                        <svg class="h-8 w-8 spin-in" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Quick Results</h3>
+                    <p class="text-gray-600">Get instant analysis results within seconds.</p>
+                </div>
+                <div class="card bg-white p-6 rounded-lg shadow-md animate__animated animate__fadeInRight">
+                    <div class="text-blue-600 mb-4">
+                        <svg class="h-8 w-8 spin-in" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Detailed Analysis</h3>
+                    <p class="text-gray-600">Clear results with professional medical interpretation.</p>
+                </div>
+            </div>
+
+            <!-- Add Statistics Section -->
+            <div class="grid md:grid-cols-4 gap-6 mb-12">
+                <div class="stat-card rounded-lg p-6 text-white text-center animate__animated animate__fadeIn">
+                    <i class="fas fa-users text-3xl mb-4"></i>
+                    <h3 class="text-2xl font-bold count-up">1000+</h3>
+                    <p>Patients Helped</p>
+                </div>
+                <div class="stat-card rounded-lg p-6 text-white text-center animate__animated animate__fadeIn">
+                    <i class="fas fa-chart-line text-3xl mb-4"></i>
+                    <h3 class="text-2xl font-bold count-up">95%</h3>
+                    <p>Accuracy Rate</p>
+                </div>
+                <div class="stat-card rounded-lg p-6 text-white text-center animate__animated animate__fadeIn">
+                    <i class="fas fa-hospital text-3xl mb-4"></i>
+                    <h3 class="text-2xl font-bold count-up">50+</h3>
+                    <p>Partner Hospitals</p>
+                </div>
+                <div class="stat-card rounded-lg p-6 text-white text-center animate__animated animate__fadeIn">
+                    <i class="fas fa-clock text-3xl mb-4"></i>
+                    <h3 class="text-2xl font-bold count-up">24/7</h3>
+                    <p>Support Available</p>
+                </div>
+            </div>
+
+            <!-- Add Features Section -->
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="feature-card rounded-lg p-6 shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-shield-alt text-blue-600 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-semibold">Privacy Protected</h3>
+                    </div>
+                    <p class="text-gray-600">Your medical data is encrypted and secure with us.</p>
+                </div>
+                <div class="feature-card rounded-lg p-6 shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-bolt text-blue-600 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-semibold">Instant Results</h3>
+                    </div>
+                    <p class="text-gray-600">Get your analysis results within seconds.</p>
+                </div>
+                <div class="feature-card rounded-lg p-6 shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-file-medical text-blue-600 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-semibold">Detailed Reports</h3>
+                    </div>
+                    <p class="text-gray-600">Comprehensive PDF reports with analysis details.</p>
+                </div>
+            </div>
+
+            <!-- Upload Section with Animation -->
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8 animate__animated animate__fadeIn">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold gradient-text">Image Analysis</h2>
+                    <div class="tooltip">
+                        <i class="fas fa-question-circle help-icon text-xl"></i>
+                        <span class="tooltiptext">Upload clear endoscopic images for best results</span>
+                    </div>
+                </div>
+                <div id="upload-area" class="upload-area p-8 text-center rounded-lg mb-6">
+                    <div id="drop-zone" class="cursor-pointer">
+                        <svg class="mx-auto h-16 w-16 text-blue-500 pulse" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p class="mt-4 text-lg text-gray-600">Drag and drop an endoscopic image here</p>
+                        <p class="mt-2 text-sm text-gray-500">or click to upload</p>
+                    </div>
+                    <input type="file" id="file-input" class="hidden" accept="image/*">
+                </div>
+
+                <div id="preview" class="hidden fade-in">
+                    <img id="preview-image" class="preview-image mx-auto mb-6" src="" alt="Preview">
+                    <div class="text-center space-x-4">
+                        <button id="analyze-btn" class="button-hover bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md">
+                            Analyze Image
+                        </button>
+                        <button id="reset-btn" class="button-hover bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md">
+                            Reset
+                        </button>
+                        <button id="download-report-btn" class="hidden button-hover bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md">
+                            Download Report
+                        </button>
+                    </div>
+                </div>
+
+                <div id="result" class="hidden mt-8 slide-in">
+                    <div id="loading" class="hidden text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                        <p class="mt-4 text-gray-600">Analyzing image...</p>
+                    </div>
+                    <div id="result-content" class="hidden">
+                        <div class="bg-gray-50 rounded-lg p-6 text-center">
+                            <h2 class="text-2xl font-bold mb-4">Analysis Result</h2>
+                            <div class="space-y-2">
+                                <p id="prediction-text" class="text-xl font-semibold"></p>
+                                <p id="confidence-text" class="text-lg text-gray-600">
+                                    <span class="font-medium">Confidence:</span> 
+                                    <span id="confidence-value"></span>
+                                </p>
+                                <div class="w-64 h-3 bg-gray-200 rounded-full mx-auto mt-2">
+                                    <div id="confidence-bar" class="h-full rounded-full progress-bar"></div>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-sm text-gray-500">
+                                Note: This is an AI-assisted analysis. Please consult with a healthcare professional for proper medical diagnosis.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add FAQ Section -->
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-center mb-8 gradient-text">Frequently Asked Questions</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg p-6 shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">What type of images should I upload?</h3>
+                        <p class="text-gray-600">Upload clear, high-quality endoscopic images for the most accurate results.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">How accurate is the detection?</h3>
+                        <p class="text-gray-600">Our AI model has achieved 95% accuracy in clinical trials.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">Is my data secure?</h3>
+                        <p class="text-gray-600">Yes, all uploaded images and results are encrypted and securely handled.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">How long does analysis take?</h3>
+                        <p class="text-gray-600">Results are typically available within seconds of uploading.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Contact Section -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4 gradient-text">Need Help?</h2>
+                <p class="text-gray-600 mb-6">Our medical team is available 24/7 to assist you</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="#" class="button-hover bg-blue-600 text-white px-6 py-3 rounded-lg">
+                        <i class="fas fa-phone-alt mr-2"></i>Contact Support
+                    </a>
+                    <a href="#" class="button-hover bg-green-600 text-white px-6 py-3 rounded-lg">
+                        <i class="fas fa-envelope mr-2"></i>Email Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const preview = document.getElementById('preview');
+        const previewImage = document.getElementById('preview-image');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const result = document.getElementById('result');
+        const loading = document.getElementById('loading');
+        const resultContent = document.getElementById('result-content');
+        const predictionText = document.getElementById('prediction-text');
+        const confidenceValue = document.getElementById('confidence-value');
+        const confidenceBar = document.getElementById('confidence-bar');
+        const downloadReportBtn = document.getElementById('download-report-btn');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+        fileInput.addEventListener('change', handleFileSelect, false);
+        uploadArea.addEventListener('click', () => fileInput.click());
+        analyzeBtn.addEventListener('click', analyzeImage);
+        resetBtn.addEventListener('click', resetUI);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (files[0]) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        preview.classList.remove('hidden');
+                        uploadArea.classList.add('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file.');
+                }
+            }
+        }
+
+        async function analyzeImage() {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            loading.classList.remove('hidden');
+            resultContent.classList.add('hidden');
+            result.classList.remove('hidden');
+            analyzeBtn.disabled = true;
+            downloadReportBtn.classList.add('hidden');
+
+            try {
+                const response = await fetch('http://localhost:8000/predict/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                predictionText.textContent = `Result: ${data.prediction}`;
+                predictionText.className = 'text-xl font-bold ' + 
+                    (data.prediction === 'Cancer' ? 'text-red-600' : 'text-green-600');
+                
+                confidenceValue.textContent = `${data.confidence}%`;
+                confidenceBar.style.width = `${data.confidence}%`;
+                confidenceBar.className = 'h-full rounded-full transition-all duration-500 ease-out ' +
+                    (data.prediction === 'Cancer' ? 'bg-red-500' : 'bg-green-500');
+                
+                loading.classList.add('hidden');
+                resultContent.classList.remove('hidden');
+                downloadReportBtn.classList.remove('hidden');
+            } catch (error) {
+                console.error('Error:', error);
+                predictionText.textContent = 'Error analyzing image. Please try again.';
+                predictionText.className = 'text-xl text-red-600';
+                
+                confidenceValue.textContent = '';
+                confidenceBar.style.width = '0%';
+                downloadReportBtn.classList.add('hidden');
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        downloadReportBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            downloadReportBtn.disabled = true;
+            downloadReportBtn.textContent = 'Generating Report...';
+
+            try {
+                const response = await fetch('http://localhost:8000/generate-report/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `gi_cancer_report_${new Date().toISOString().slice(0,19).replace(/[-:]/g, '')}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error('Error generating report:', error);
+                alert('Error generating report. Please try again.');
+            } finally {
+                downloadReportBtn.disabled = false;
+                downloadReportBtn.textContent = 'Download Report';
+            }
+        });
+
+        function resetUI() {
+            fileInput.value = '';
+            preview.classList.add('hidden');
+            uploadArea.classList.remove('hidden');
+            result.classList.add('hidden');
+            loading.classList.add('hidden');
+            resultContent.classList.add('hidden');
+            confidenceBar.style.width = '0%';
+            downloadReportBtn.classList.add('hidden');
+        }
+
+        // Add animation for statistics
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.count-up');
+            numbers.forEach(number => {
+                const target = parseFloat(number.innerText);
+                let count = 0;
+                const duration = 2000;
+                const increment = target / (duration / 16);
+
+                const updateCount = () => {
+                    if (count < target) {
+                        count += increment;
+                        number.innerText = Math.round(count) + (number.innerText.includes('+') ? '+' : '');
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        number.innerText = target + (number.innerText.includes('+') ? '+' : '');
+                    }
+                };
+
+                updateCount();
+            });
+        }
+
+        // Run animations when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            animateNumbers();
+        });
+    </script>
+</body>
+</html> 

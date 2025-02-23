@@ -1,0 +1,9 @@
+CMD to run locally (needs to run in root directory):
+a) pip install -r requirements.txt
+b) uvicorn main:app --reload
+
+After running locally:-
+- Documentation url: http://127.0.0.1:xxxx/docs
+- API endpoint: predict
+  API url: http://127.0.0.1:xxxx/predict
+  API method: POST
