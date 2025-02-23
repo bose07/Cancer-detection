@@ -1,0 +1,41 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Model files
+model/
+*.keras
+*.h5
+DSnet_cancer_prediction.keras
+
+# Virtual environment
+venv/
+env/
+.env
+
+# Temporary files and uploads
+static/temp/*
+!static/temp/.gitkeep
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Local development files
+*.sqlite3
+*.db
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/ 
