@@ -175,7 +175,7 @@
 
         .hero-pattern {
             background-color: #ffffff;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
         .glass-effect {
@@ -712,6 +712,50 @@
         </div>
     </div>
 
+    <!-- Add patient details modal -->
+    <div id="patient-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full m-4">
+            <h3 class="text-xl font-bold mb-4 dark:text-white">Patient Details</h3>
+            <form id="patient-details-form" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-200 mb-2">Patient Name *</label>
+                    <input type="text" name="patientName" required
+                        class="w-full px-4 py-2 rounded border dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-200 mb-2">Age *</label>
+                    <input type="number" name="age" required min="0" max="150"
+                        class="w-full px-4 py-2 rounded border dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-200 mb-2">Gender *</label>
+                    <select name="gender" required
+                        class="w-full px-4 py-2 rounded border dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-200 mb-2">Phone Number *</label>
+                    <input type="tel" name="phoneNumber" required
+                        class="w-full px-4 py-2 rounded border dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" id="cancel-patient-details" 
+                        class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Generate Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const uploadArea = document.getElementById('upload-area');
         const fileInput = document.getElementById('file-input');
@@ -877,41 +921,76 @@
             });
         }
 
-        downloadReportBtn.addEventListener('click', async () => {
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            downloadReportBtn.disabled = true;
-            downloadReportBtn.textContent = 'Generating Report...';
-
-            try {
-                const response = await fetch('http://localhost:8000/generate-report/', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+        downloadReportBtn.addEventListener('click', () => {
+            // Show patient details modal
+            const modal = document.getElementById('patient-details-modal');
+            const form = document.getElementById('patient-details-form');
+            
+            // Reset form before showing
+            form.reset();
+            modal.classList.remove('hidden');
+            
+            // Handle form submission
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                
+                // Get the current image file
+                const file = fileInput.files[0];
+                if (!file) {
+                    alert('No image file found');
+                    return;
                 }
-
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `gi_cancer_report_${new Date().toISOString().slice(0,19).replace(/[-:]/g, '')}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            } catch (error) {
-                console.error('Error generating report:', error);
-                alert('Error generating report. Please try again.');
-            } finally {
-                downloadReportBtn.disabled = false;
-                downloadReportBtn.textContent = 'Download Report';
-            }
+                
+                // Add the image to form data
+                formData.append('file', file);
+                
+                // Add prediction results
+                formData.append('prediction', predictionText.textContent.replace('Result: ', ''));
+                formData.append('confidence', confidenceValue.textContent.replace('%', ''));
+                
+                try {
+                    // Show loading state
+                    downloadReportBtn.disabled = true;
+                    downloadReportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    
+                    const response = await fetch('http://localhost:8000/generate-report/', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Failed to generate report');
+                    }
+                    
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `analysis_report_${new Date().getTime()}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Close modal and reset states
+                    modal.classList.add('hidden');
+                    form.reset();
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message || 'Error generating report. Please try again.');
+                } finally {
+                    downloadReportBtn.disabled = false;
+                    downloadReportBtn.innerHTML = 'Download Report';
+                }
+            };
+            
+            // Handle cancel button
+            document.getElementById('cancel-patient-details').onclick = () => {
+                modal.classList.add('hidden');
+                form.reset();
+            };
         });
 
         function resetUI() {
@@ -1069,53 +1148,92 @@
             }
         });
 
-        // Export individual analysis
+        // Update the exportAnalysis function
         function exportAnalysis(button) {
             const historyItem = button.closest('.p-4');
             const analysisItem = historyItem.querySelector('.flex.items-center.space-x-4');
             const imageUrl = analysisItem.querySelector('img').src;
+            const prediction = analysisItem.querySelector('.font-semibold').textContent;
+            const confidence = analysisItem.querySelector('.text-gray-500').textContent.match(/\d+/)[0];
 
-            // Create form data with the image
-            const formData = new FormData();
-            fetch(imageUrl)
-                .then(res => res.blob())
-                .then(blob => {
-                    formData.append('file', blob, 'analysis_image.jpg');
+            // Show patient details modal
+            const modal = document.getElementById('patient-details-modal');
+            const form = document.getElementById('patient-details-form');
+            // Reset form before showing
+            form.reset();
+            modal.classList.remove('hidden');
+
+            // Handle form submission
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                
+                // Validate form data
+                const patientName = formData.get('patientName');
+                const age = formData.get('age');
+                const gender = formData.get('gender');
+                const phoneNumber = formData.get('phoneNumber');
+                
+                if (!patientName || !age || !gender || !phoneNumber) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                try {
+                    const imageBlob = await fetch(imageUrl).then(res => res.blob());
+                    formData.append('file', imageBlob, 'analysis_image.jpg');
                     
+                    // Add analysis results
+                    formData.append('prediction', prediction);
+                    formData.append('confidence', confidence);
+
                     // Show loading state
                     button.disabled = true;
                     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
                     // Generate and download PDF report
-                    fetch('http://localhost:8000/generate-report/', {
+                    const response = await fetch('http://localhost:8000/generate-report/', {
                         method: 'POST',
                         body: formData
-                    })
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `analysis_report_${new Date().getTime()}.pdf`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
-                        
-                        // Reset button state
-                        button.disabled = false;
-                        button.innerHTML = '<i class="fas fa-download"></i>';
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error generating report. Please try again.');
-                        button.disabled = false;
-                        button.innerHTML = '<i class="fas fa-download"></i>';
                     });
-                });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Failed to generate report. Please ensure all fields are filled correctly.');
+                    }
+
+                    const blob = await response.blob();
+                    if (blob.size === 0) {
+                        throw new Error('Generated PDF is empty. Please try again.');
+                    }
+
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `analysis_report_${new Date().getTime()}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Reset button state and close modal
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-download"></i>';
+                    modal.classList.add('hidden');
+                    form.reset();
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message || 'Failed to generate report. Please try again and ensure all fields are filled correctly.');
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-download"></i>';
+                }
+            };
+
+            // Handle cancel button
+            document.getElementById('cancel-patient-details').onclick = () => {
+                modal.classList.add('hidden');
+                form.reset();
+            };
         }
 
         // Add the deleteAnalysis function
