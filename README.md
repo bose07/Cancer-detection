@@ -1,28 +1,31 @@
 # Gastrointestinal Cancer Detection System
 
-An AI-powered application for detecting gastrointestinal cancer from medical images.
+An AI-powered system for detecting gastrointestinal cancer from medical images.
 
 ## Features
-- Upload and analyze medical images
+- Image upload and analysis
 - AI-based cancer detection
-- Generate detailed PDF reports
-- Track analysis history
-- Dark/Light mode interface
+- PDF report generation
+- Analysis history tracking
+- Dark/Light mode support
 
-## Tech Stack
-- FastAPI
-- TensorFlow
-- Python
-- HTML/TailwindCSS
-- ReportLab
-
-## Setup Instructions
+## Setup
 1. Clone the repository
-2. Install requirements:
-   ```pip install -r requirements.txt```
-3. Place the model file in the `model` directory
-4. Run the application:
-   ```python main.py```
+2. Create a virtual environment:
+   ```bash
+   python -m venv venv
+   ```
+3. Activate the virtual environment:
+   - Windows: `venv\Scripts\activate`
+   - Unix/MacOS: `source venv/bin/activate`
+4. Install requirements:
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. Download the model file and place it in the `model` directory
+6. Run the application:
+   ```bash
+   python main.py
+   ```
 
-## Note
-The model file is not included in the repository and needs to be downloaded separately. 
+## Project Structure
