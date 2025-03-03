@@ -5,20 +5,30 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import pathlib
 import uvicorn
-from keras.models import load_model  # type: ignore
-from keras.preprocessing.image import load_img, img_to_array  # type: ignore
+from transformers import pipeline  # type: ignore
+from huggingface_hub import hf_hub_download  # Import for downloading the model
+from keras.models import load_model  # Import for loading the Keras model
+import os  # Ensure os is imported for environment variable access
+import logging  # Import for logging errors
+
+# Initialize logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+from dotenv import load_dotenv  # Import for loading environment variables
+
+# Load environment variables from .env file
+load_dotenv()
 import numpy as np
 import os
 from datetime import datetime
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.styles import getSampleStyleSheet
-from PIL import Image
 import io
-from reportlab.lib.utils import ImageReader
+from reportlab.lib.utils import ImageReader  # Import ImageReader for handling images
+from reportlab.lib.pagesizes import letter  # Import letter for PDF page size
 
 # Create lifespan context
 @asynccontextmanager
@@ -54,7 +64,62 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+) 
+from keras.preprocessing.image import load_img, img_to_array
+
+...
+
+@app.post("/predict/")
+async def predict(file: UploadFile = File(...)):
+    try:
+        # Read the uploaded image
+        content = await file.read()
+        temp_path = app.state.temp_dir / "temp_image.jpg"
+        with open(temp_path, "wb") as temp_file:
+            temp_file.write(content)
+
+        # Load the image and convert it to an array
+        image = load_img(temp_path, target_size=(380, 380))  # Resize to (380, 380)
+        image_array = img_to_array(image) / 255.0  # Normalize
+        image_array = np.expand_dims(image_array, axis=0)
+
+        # Make a prediction
+        predictions = model.predict(image_array)
+        logger.info(f"Raw predictions: {predictions}")  # Log the raw predictions
+        class_label = "Cancer" if predictions[0][0] < 0.5 else "Normal"
+        confidence = float(abs(predictions[0][0] - 0.5) * 2 * 100)  # Calculate confidence using the new formula
+
+        return {"prediction": class_label, "confidence": f"{confidence:.2f}"}  # Format confidence to two decimal places
+    except Exception as e:
+        logger.error(f"Error during prediction: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
+# Get Hugging Face token from .env
+hf_token = os.getenv("HF_ACCESS_TOKEN")
+if not hf_token:
+    raise ValueError("Hugging Face access token not found. Make sure you have set HF_ACCESS_TOKEN in your .env file.")
+
+# Load model from Hugging Face Hub (Private Repo)
+MODEL_REPO = "schandel08/cancer_prediction_spc_v0"
+MODEL_FILENAME = "DSnet_cancer_prediction.keras"
+
+try:
+    model_path = hf_hub_download(
+        repo_id=MODEL_REPO,
+        filename=MODEL_FILENAME,
+        cache_dir="./models",
+        token=hf_token,  # Authenticate with HF token
+    )
+    model = load_model(model_path)
+except Exception as e:
+    raise RuntimeError(f"Failed to load model: {str(e)}")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open("templates/index.html", "r") as f:
+        return f.read()
+
+# The previous definition of the predict function has been removed.
 
 def generate_pdf_report(image_path, prediction, confidence, patient_name, age, gender, phone_number):
     buffer = io.BytesIO()
@@ -179,44 +244,7 @@ def generate_pdf_report(image_path, prediction, confidence, patient_name, age, g
 
     c.save()
     buffer.seek(0)
-    return buffer
-
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
-    with open("templates/index.html", "r") as f:
-        return f.read()
-
-# Define a prediction endpoint
-@app.post("/predict/")
-async def predict(file: UploadFile = File(...)):
-    # Load the model
-    model = load_model("model\DSnet_cancer_prediction.keras")
-
-    # Read the uploaded image
-    content = await file.read()
-    temp_path = app.state.temp_dir / "temp_image.jpg"
-    with open(temp_path, "wb") as temp_file:
-        temp_file.write(content)
-
-    # Preprocess the image - Changed target size to 380x380
-    image = load_img(str(temp_path), target_size=(380, 380))
-    image_array = img_to_array(image) / 255.0  # Normalize
-    image_array = np.expand_dims(image_array, axis=0)
-
-    # Make a prediction
-    prediction = model.predict(image_array)
-    confidence = float(abs(prediction[0][0] - 0.5) * 2 * 100)  # Convert to percentage
-    class_label = "Cancer" if prediction[0][0] < 0.5 else "Normal"
-    confidence_rounded = round(confidence, 2)
-
-    # Clean up temporary file
-    if temp_path.exists():
-        temp_path.unlink()
-
-    return {
-        "prediction": class_label,
-        "confidence": confidence_rounded
-    }
+    return buffer 
 
 @app.post("/generate-report/")
 async def generate_report(
@@ -228,87 +256,13 @@ async def generate_report(
     prediction: str = Form(default=""),
     confidence: str = Form(default="")
 ):
-    try:
-        # Print received data for debugging
-        print(f"Received data: name={patientName}, age={age}, gender={gender}, phone={phoneNumber}")
-        print(f"Prediction={prediction}, confidence={confidence}")
-
-        # Validate form data
-        if not all([patientName, age, gender, phoneNumber, prediction, confidence]):
-            missing_fields = []
-            if not patientName: missing_fields.append("Patient Name")
-            if not age: missing_fields.append("Age")
-            if not gender: missing_fields.append("Gender")
-            if not phoneNumber: missing_fields.append("Phone Number")
-            if not prediction: missing_fields.append("Prediction")
-            if not confidence: missing_fields.append("Confidence")
-            raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
-
-        # Save the image temporarily
-        content = await file.read()
-        temp_path = app.state.temp_dir / "temp_report_image.jpg"
-        with open(temp_path, "wb") as temp_file:
-            temp_file.write(content)
-
-        # Validate image
-        if not os.path.exists(temp_path):
-            raise ValueError("Failed to save uploaded image")
-
-        try:
-            # Generate PDF
-            pdf_buffer = generate_pdf_report(
-                str(temp_path),
-                prediction,
-                confidence,
-                patientName,
-                age,
-                gender,
-                phoneNumber
-            )
-        except Exception as pdf_error:
-            raise ValueError(f"Failed to generate PDF: {str(pdf_error)}")
-
-        # Clean up
-        if temp_path.exists():
-            temp_path.unlink()
-
-        # Return PDF as StreamingResponse
-        filename = f"gi_cancer_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-        headers = {
-            'Content-Disposition': f'attachment; filename="{filename}"'
-        }
-        
-        return StreamingResponse(
-            pdf_buffer,
-            media_type="application/pdf",
-            headers=headers
-        )
-
-    except Exception as e:
-        error_msg = str(e)
-        print(f"Error generating report: {error_msg}")
-        if 'temp_path' in locals() and temp_path.exists():
-            temp_path.unlink()
-        return JSONResponse(
-            status_code=422,
-            content={"detail": error_msg}
-        )
-
-if __name__ == "__main__":
-    config = uvicorn.Config(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        workers=1,
-        log_level="info",
-        loop="asyncio"
-    )
-    server = uvicorn.Server(config)
-    try:
-        server.run()
-    except KeyboardInterrupt:
-        print("Received shutdown signal, cleaning up...")
-        # Additional cleanup if needed
-    finally:
-        print("Server shutdown complete")
+    # Call the generate_pdf_report function
+    image_path = app.state.temp_dir / "temp_image.jpg"  # Assuming the image is saved here
+    pdf_buffer = generate_pdf_report(image_path, prediction, confidence, patientName, age, gender, phoneNumber)
+    
+    return StreamingResponse(pdf_buffer, media_type='application/pdf', headers={"Content-Disposition": "attachment; filename=report.pdf"})
+    # Call the generate_pdf_report function
+    image_path = app.state.temp_dir / "temp_image.jpg"  # Assuming the image is saved here
+    pdf_buffer = generate_pdf_report(image_path, prediction, confidence, patientName, age, gender, phoneNumber)
+    
+    return StreamingResponse(pdf_buffer, media_type='application/pdf', headers={"Content-Disposition": "attachment; filename=report.pdf"})

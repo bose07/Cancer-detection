@@ -1,31 +1,41 @@
-# Gastrointestinal Cancer Detection System
+---
+title: GI Cancer Detection
+emoji: 🩺
+colorFrom: #ff7f50
+colorTo: #ff6347
+sdk: FastAPI
+sdk_version: "0.115.5"
+app_file: app.py
+pinned: false
+---
 
-An AI-powered system for detecting gastrointestinal cancer from medical images.
+# Project Title: GI Cancer Detection
 
-## Features
-- Image upload and analysis
-- AI-based cancer detection
-- PDF report generation
-- Analysis history tracking
-- Dark/Light mode support
+## Description
+This project is a web application that utilizes FastAPI to serve a machine learning model for detecting gastrointestinal cancer.
 
-## Setup
-1. Clone the repository
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   ```
-3. Activate the virtual environment:
-   - Windows: `venv\Scripts\activate`
-   - Unix/MacOS: `source venv/bin/activate`
-4. Install requirements:
-   ```bash
-   pip install -r requirements.txt
-   ```
-5. Download the model file and place it in the `model` directory
-6. Run the application:
-   ```bash
-   python main.py
-   ```
+## Requirements
+List of dependencies required to run the project:
+- FastAPI
+- Uvicorn
+- Keras
+- TensorFlow
+- Pillow
+- ReportLab
+- Python-multipart
 
-## Project Structure
+## Running the Application
+Instructions on how to run the application locally or in the Hugging Face Space.
+
+## Model
+Description of the model being used and how to load it.
+
+## Docker
+Instructions for building and running the Docker container:
+```bash
+docker build -t your_image_name .
+docker run -p 7860:7860 your_image_name
+```
+
+## License
+This project is licensed under the MIT License.
