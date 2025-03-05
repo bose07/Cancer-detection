@@ -60,7 +60,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with your frontend domain
+    allow_origins=["https://cancer-detection-2-owju.onrender.com/"],  # In production, replace with your frontend domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -72,6 +72,11 @@ from keras.preprocessing.image import load_img, img_to_array
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     try:
+        # Validate the uploaded file type
+        if not file.content_type.startswith('image/'):
+            logger.error("Uploaded file is not an image.")
+            raise HTTPException(status_code=400, detail="Uploaded file is not an image.")
+        
         # Read the uploaded image
         content = await file.read()
         temp_path = app.state.temp_dir / "temp_image.jpg"
