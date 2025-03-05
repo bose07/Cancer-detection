@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -34,23 +34,24 @@ from reportlab.lib.pagesizes import letter  # Import letter for PDF page size
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    print("Starting up...")
-    # Create directories
-    static_dir = pathlib.Path("static")
-    static_dir.mkdir(exist_ok=True)
-    temp_dir = static_dir / "temp"
-    temp_dir.mkdir(exist_ok=True)
-    
-    # Make temp_dir available to routes
-    app.state.temp_dir = temp_dir
-    
-    yield
-    
-    # Shutdown
-    print("Shutting down...")
-    # Cleanup temp files
-    for temp_file in temp_dir.glob("*.jpg"):
-        temp_file.unlink(missing_ok=True)
+    logger.info("Starting up...")
+    try:
+        # Create directories
+        static_dir = pathlib.Path("static")
+        static_dir.mkdir(exist_ok=True)
+        temp_dir = static_dir / "temp"
+        temp_dir.mkdir(exist_ok=True)
+        
+        # Make temp_dir available to routes
+        app.state.temp_dir = temp_dir
+        
+        yield
+    finally:
+        # Shutdown
+        logger.info("Shutting down...")
+        # Cleanup temp files
+        for temp_file in temp_dir.glob("*.jpg"):
+            temp_file.unlink(missing_ok=True)
 
 app = FastAPI(lifespan=lifespan)
 
@@ -60,19 +61,18 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://cancer-detection-2-owju.onrender.com"],  # Use HTTPS for production
+    allow_origins=["*"],  # In production, replace with your frontend domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 ) 
 from keras.preprocessing.image import load_img, img_to_array
 
-...
-
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     try:
         # Validate the uploaded file type
+        logger.info(f"Received file: {file.filename} with content type: {file.content_type}")
         if not file.content_type.startswith('image/'):
             logger.error("Uploaded file is not an image.")
             raise HTTPException(status_code=400, detail="Uploaded file is not an image.")
@@ -84,11 +84,19 @@ async def predict(file: UploadFile = File(...)):
             temp_file.write(content)
 
         # Load the image and convert it to an array
+        logger.info(f"Processing image: {temp_path}")
         image = load_img(temp_path, target_size=(380, 380))  # Resize to (380, 380)
         image_array = img_to_array(image) / 255.0  # Normalize
         image_array = np.expand_dims(image_array, axis=0)
 
+        # Log the shape of the input array
+        logger.info(f"Input array shape: {image_array.shape}")
+
+        # Log model state
+        logger.info("Model state before prediction: {}".format(model))
+
         # Make a prediction
+        logger.info("Making prediction...")
         predictions = model.predict(image_array)
         logger.info(f"Raw predictions: {predictions}")  # Log the raw predictions
         class_label = "Cancer" if predictions[0][0] < 0.5 else "Normal"
@@ -99,32 +107,28 @@ async def predict(file: UploadFile = File(...)):
         logger.error(f"Error during prediction: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
-# Get Hugging Face token from .env
-hf_token = os.getenv("HF_ACCESS_TOKEN")
-if not hf_token:
-    raise ValueError("Hugging Face access token not found. Make sure you have set HF_ACCESS_TOKEN in your .env file.")
-
 # Load model from Hugging Face Hub (Private Repo)
 MODEL_REPO = "schandel08/cancer_prediction_spc_v0"
 MODEL_FILENAME = "DSnet_cancer_prediction.keras"
 
 try:
+    logger.info("Loading model from Hugging Face Hub...")
     model_path = hf_hub_download(
         repo_id=MODEL_REPO,
         filename=MODEL_FILENAME,
         cache_dir="./models",
-        token=hf_token,  # Authenticate with HF token
+        token=os.getenv("HF_ACCESS_TOKEN"),  # Authenticate with HF token
     )
     model = load_model(model_path)
+    logger.info("Model loaded successfully.")
 except Exception as e:
+    logger.error(f"Failed to load model: {str(e)}")
     raise RuntimeError(f"Failed to load model: {str(e)}")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     with open("templates/index.html", "r") as f:
         return f.read()
-
-# The previous definition of the predict function has been removed.
 
 def generate_pdf_report(image_path, prediction, confidence, patient_name, age, gender, phone_number):
     buffer = io.BytesIO()
