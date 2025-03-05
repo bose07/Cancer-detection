@@ -60,7 +60,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://cancer-detection-2-owju.onrender.com/"],  # In production, replace with your frontend domain
+    allow_origins=["https://cancer-detection-2-owju.onrender.com"],  # Use HTTPS for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -261,11 +261,6 @@ async def generate_report(
     prediction: str = Form(default=""),
     confidence: str = Form(default="")
 ):
-    # Call the generate_pdf_report function
-    image_path = app.state.temp_dir / "temp_image.jpg"  # Assuming the image is saved here
-    pdf_buffer = generate_pdf_report(image_path, prediction, confidence, patientName, age, gender, phoneNumber)
-    
-    return StreamingResponse(pdf_buffer, media_type='application/pdf', headers={"Content-Disposition": "attachment; filename=report.pdf"})
     # Call the generate_pdf_report function
     image_path = app.state.temp_dir / "temp_image.jpg"  # Assuming the image is saved here
     pdf_buffer = generate_pdf_report(image_path, prediction, confidence, patientName, age, gender, phoneNumber)
