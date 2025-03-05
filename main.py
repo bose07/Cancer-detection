@@ -119,6 +119,7 @@ try:
         cache_dir="./models",
         token=os.getenv("HF_ACCESS_TOKEN"),  # Authenticate with HF token
     )
+    logger.info(f"Model path: {model_path}")  # Log the model path
     model = load_model(model_path)
     logger.info("Model loaded successfully.")
 except Exception as e:
