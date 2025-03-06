@@ -111,20 +111,28 @@ async def predict(file: UploadFile = File(...)):
 MODEL_REPO = "schandel08/cancer_prediction_spc_v0"
 MODEL_FILENAME = "DSnet_cancer_prediction.keras"
 
+# Replace the existing model loading code with this:
+MODEL_REPO = "schandel08/cancer_prediction_spc_v0"
+MODEL_FILENAME = "DSnet_cancer_prediction.keras"  # Double-check filename spelling!
+
 try:
     logger.info("Loading model from Hugging Face Hub...")
+    
+    # Ensure cache directory exists
+    os.makedirs("./models", exist_ok=True)
+    
     model_path = hf_hub_download(
         repo_id=MODEL_REPO,
         filename=MODEL_FILENAME,
         cache_dir="./models",
-        token=os.getenv("HF_ACCESS_TOKEN"),  # Authenticate with HF token
+        token=os.getenv("HF_ACCESS_TOKEN"),  # Critical for private repo
     )
-    logger.info(f"Model path: {model_path}")  # Log the model path
+    logger.info(f"Model path: {model_path}")
     model = load_model(model_path)
     logger.info("Model loaded successfully.")
 except Exception as e:
-    logger.error(f"Failed to load model: {str(e)}")
-    raise RuntimeError(f"Failed to load model: {str(e)}")
+    logger.error(f"Model loading failed: {str(e)}")
+    raise RuntimeError(f"Model loading failed: {str(e)}")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
