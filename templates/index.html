@@ -175,7 +175,7 @@
 
         .hero-pattern {
             background-color: #ffffff;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
         .glass-effect {
@@ -757,6 +757,10 @@
     </div>
 
     <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8000' 
+            : 'https://your-actual-render-url.onrender.com';  // Replace with your actual Render URL
+
         const uploadArea = document.getElementById('upload-area');
         const fileInput = document.getElementById('file-input');
         const preview = document.getElementById('preview');
@@ -814,68 +818,125 @@
             }
         }
 
-        async function analyzeImage() {
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            // Show loading state
-            loading.classList.remove('hidden');
-            resultContent.classList.add('hidden');
-            result.classList.remove('hidden');
-            analyzeBtn.disabled = true;
-            downloadReportBtn.classList.add('hidden');
-            
-            const loadingStatus = document.getElementById('loading-status');
-
-            // Optimize image before sending
+        async function testConnection() {
             try {
-                // Create a new FormData object
-                const formData = new FormData();
+                console.log('Testing connection to:', API_URL);
+                const response = await fetch(`${API_URL}/health`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
                 
-                // Compress image if it's too large
-                if (file.size > 1000000) { // If larger than 1MB
-                    loadingStatus.textContent = "Optimizing image size...";
-                    const compressedFile = await compressImage(file);
-                    formData.append('file', compressedFile, 'image.jpg');
-                } else {
-                    formData.append('file', file);
+                if (!response.ok) {
+                    console.error('Health check failed:', response.status, response.statusText);
+                    return false;
+                }
+                
+                const data = await response.json();
+                console.log('Health check response:', data);
+                
+                if (data.status !== 'healthy') {
+                    console.error('Server reported unhealthy status:', data);
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Connection test failed:', error);
+                return false;
+            }
+        }
+
+        async function analyzeImage() {
+            try {
+                const file = fileInput.files[0];
+                if (!file) {
+                    throw new Error('Please select an image file.');
                 }
 
+                // Show loading state
+                loading.classList.remove('hidden');
+                resultContent.classList.add('hidden');
+                result.classList.remove('hidden');
+                analyzeBtn.disabled = true;
+                downloadReportBtn.classList.add('hidden');
+                
+                const loadingStatus = document.getElementById('loading-status');
+                loadingStatus.textContent = "Preparing image...";
+
+                const formData = new FormData();
+                formData.append('file', file);
+
                 loadingStatus.textContent = "Sending to server...";
-                const response = await fetch('http://localhost:8000/predict/', {
-                    method: 'POST',
-                    body: formData
-                });
+                console.log('Sending request to:', `${API_URL}/predict/`);
+                
+                try {
+                    const response = await fetch(`${API_URL}/predict/`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${HF_ACCESS_TOKEN}`,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
 
-                loadingStatus.textContent = "Processing results...";
-                const data = await response.json();
-                
-                // Update UI with results
-                predictionText.textContent = `Result: ${data.prediction}`;
-                predictionText.className = 'text-xl font-bold ' + 
-                    (data.prediction === 'Cancer' ? 'text-red-600' : 'text-green-600');
-                
-                confidenceValue.textContent = `${data.confidence}%`;
-                confidenceBar.style.width = `${data.confidence}%`;
-                confidenceBar.className = 'h-full rounded-full transition-all duration-500 ease-out ' +
-                    (data.prediction === 'Cancer' ? 'bg-red-500' : 'bg-green-500');
-                
-                loading.classList.add('hidden');
-                resultContent.classList.remove('hidden');
-                downloadReportBtn.classList.remove('hidden');
+                    console.log('Response status:', response.status);
+                    const contentType = response.headers.get('content-type');
+                    console.log('Response content type:', contentType);
 
-                addToHistory(data.prediction, data.confidence, previewImage.src);
-                document.getElementById('analysis-history').classList.remove('hidden');
-                
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Error response:', errorText);
+                        try {
+                            const errorJson = JSON.parse(errorText);
+                            throw new Error(errorJson.message || errorJson.detail || 'Failed to analyze image');
+                        } catch (e) {
+                            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                        }
+                    }
+
+                    const data = await response.json();
+                    console.log('Response data:', data);
+
+                    if (data.status === 'failed') {
+                        throw new Error(data.message || 'Analysis failed');
+                    }
+
+                    // Update UI with results
+                    predictionText.textContent = `Result: ${data.prediction}`;
+                    predictionText.className = 'text-xl font-bold ' + 
+                        (data.prediction === 'Cancer' ? 'text-red-600' : 'text-green-600');
+                    
+                    confidenceValue.textContent = `${data.confidence}%`;
+                    confidenceBar.style.width = `${data.confidence}%`;
+                    confidenceBar.className = 'h-full rounded-full transition-all duration-500 ease-out ' +
+                        (data.prediction === 'Cancer' ? 'bg-red-500' : 'bg-green-500');
+                    
+                    loading.classList.add('hidden');
+                    resultContent.classList.remove('hidden');
+                    downloadReportBtn.classList.remove('hidden');
+
+                    addToHistory(data.prediction, data.confidence, previewImage.src);
+                    document.getElementById('analysis-history').classList.remove('hidden');
+
+                } catch (fetchError) {
+                    console.error('Fetch error:', fetchError);
+                    throw fetchError;
+                }
+
             } catch (error) {
                 console.error('Error:', error);
-                loadingStatus.textContent = "Error occurred during analysis";
-                predictionText.textContent = 'Error analyzing image. Please try again.';
+                loading.classList.add('hidden');
+                resultContent.classList.remove('hidden');
+                
+                predictionText.textContent = error.message || 'Error analyzing image. Please try again.';
                 predictionText.className = 'text-xl text-red-600';
                 
                 confidenceValue.textContent = '';
                 confidenceBar.style.width = '0%';
                 downloadReportBtn.classList.add('hidden');
+                
+                alert(error.message || 'An error occurred while analyzing the image.');
             } finally {
                 analyzeBtn.disabled = false;
             }
@@ -954,8 +1015,11 @@
                     downloadReportBtn.disabled = true;
                     downloadReportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                     
-                    const response = await fetch('http://localhost:8000/generate-report/', {
+                    const response = await fetch(`${API_URL}/generate-report/`, {
                         method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${HF_ACCESS_TOKEN}`
+                        },
                         body: formData
                     });
                     
@@ -1192,8 +1256,11 @@
                     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
                     // Generate and download PDF report
-                    const response = await fetch('http://localhost:8000/generate-report/', {
+                    const response = await fetch(`${API_URL}/generate-report/`, {
                         method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${HF_ACCESS_TOKEN}`
+                        },
                         body: formData
                     });
 
