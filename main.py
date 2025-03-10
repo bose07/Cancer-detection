@@ -80,7 +80,7 @@ class Config:
     API_URL = os.getenv("API_URL", "http://localhost:8000")
     ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
     IS_PRODUCTION = os.getenv("RENDER", "false").lower() == "true"
-    MODELS_CACHE_DIR = "/opt/render/project/models" if IS_PRODUCTION else "./models"
+    MODELS_CACHE_DIR = "./models"
 
 # Use configuration
 app.add_middleware(
