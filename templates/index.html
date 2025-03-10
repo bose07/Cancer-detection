@@ -757,7 +757,7 @@
     </div>
 
     <script>
-        const API_URL = 'https://cancer-detection-0vxc.onrender.com/';
+        const API_URL = 'https://schandel08-gastric-cancer-detection.hf.space';
         const uploadArea = document.getElementById('upload-area');
         const fileInput = document.getElementById('file-input');
         const preview = document.getElementById('preview');
@@ -870,10 +870,6 @@
                 try {
                     const response = await fetch(`${API_URL}/predict/`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${HF_ACCESS_TOKEN}`,
-                            'Accept': 'application/json'
-                        },
                         body: formData
                     });
 
