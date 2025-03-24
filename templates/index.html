@@ -1010,9 +1010,6 @@
                     
                     const response = await fetch(`${API_URL}/generate-report/`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${HF_ACCESS_TOKEN}`
-                        },
                         body: formData
                     });
                     
@@ -1251,9 +1248,6 @@
                     // Generate and download PDF report
                     const response = await fetch(`${API_URL}/generate-report/`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${HF_ACCESS_TOKEN}`
-                        },
                         body: formData
                     });
 
